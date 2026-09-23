@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f4efe7" />
-  <title>幫助別人太累了吧｜線性選擇題遊戲</title>
+  <title>幫助別人太累了吧｜8bit 紙娃娃選擇遊戲</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          colors: { paper: '#f4efe7', ink: '#222522', coral: '#ef6b57', mint: '#b7d9c8', butter: '#f3d47b', line: '#d8d1c6' },
+          colors: { paper: '#f4efe7', ink: '#222522', coral: '#ef6b57', mint: '#b7d9c8', butter: '#f3d47b', line: '#d8d1c6', sky: '#b9d7e6', dusk: '#2b3d4a' },
           fontFamily: { display: ['Georgia', 'Noto Serif TC', 'serif'], sans: ['Arial', 'Noto Sans TC', 'sans-serif'] },
           boxShadow: { soft: '0 14px 40px rgba(44, 42, 37, 0.08)' }
         }
@@ -18,113 +18,988 @@
     };
   </script>
   <style>
+    :root {
+      --bg-1: #f8b78a;
+      --bg-2: #f6d1aa;
+      --bg-3: #5f3e39;
+      --ink: #29211f;
+      --panel: rgba(46, 23, 23, 0.7);
+      --panel-soft: rgba(255,255,255,0.12);
+      --accent: #ef6b57;
+      --accent-strong: #d75a4d;
+      --gold: #f3d47b;
+      --sun: #f7c58b;
+      --orange: #e97d5d;
+      --rose: #e99d7d;
+      --line: #d8d1c6;
+    }
+
+    * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { background: #000; color: #222522; }
+    body { background: #000; color: var(--ink); font-family: Arial, 'Noto Sans TC', sans-serif; }
     .grain { background-image: radial-gradient(rgba(34,37,34,.08) .6px, transparent .6px); background-size: 8px 8px; }
-    .visual-placeholder { background: repeating-linear-gradient(135deg, rgba(34,37,34,.07) 0 2px, transparent 2px 10px), #e6e0d6; }
-    .hero-placeholder { background: repeating-linear-gradient(135deg, rgba(34,37,34,.12) 0 2px, transparent 2px 12px), #b9b0a3; }
-    .image-fill { background-position: center; background-size: cover; background-repeat: no-repeat; }
-    .responsive-background { background-image: var(--desktop-image); }
-    @media (max-width: 767px) { .responsive-background { background-image: var(--mobile-image); } }
+    .pixel-art { image-rendering: pixelated; image-rendering: crisp-edges; shape-rendering: crispEdges; filter: drop-shadow(0 6px 12px rgba(87, 52, 29, 0.15)); }
     .phone-stage { min-height: 100vh; width: 100%; }
-    .phone-stage::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(20, 24, 22, .08) 0%, transparent 45%, rgba(20, 24, 22, .58) 100%); }
-    .glass-panel { background: rgba(20, 24, 22, .64); border: 1px solid rgba(255, 255, 255, .18); box-shadow: 0 14px 35px rgba(0, 0, 0, .16); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-    .glass-choice { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .25); }
-    .glass-choice:hover { background: rgba(239, 107, 87, .9); border-color: transparent; }
-    #ending-screen { background: #fbf7ef; color: #222522; }
-    #ending-screen > * { max-width: 48rem; margin-left: auto; margin-right: auto; }
-    .ticker-track { animation: ticker 28s linear infinite; width: max-content; }
-    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    .fade-in { animation: fade .55s ease both; }
-    @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .choice-btn { transition: transform .2s ease, background-color .2s ease, border-color .2s ease; }
+    .glass-panel { background: rgba(53, 31, 31, .56); border: 1px solid rgba(255,255,255,.18); box-shadow: 0 18px 40px rgba(0,0,0,.14); backdrop-filter: blur(8px); }
+    .intro-surface { background: linear-gradient(135deg, rgba(141, 89, 63, .82), rgba(221, 143, 93, .7)); }
+    .game-panel { border: 4px solid rgba(92, 58, 44, 0.75); border-radius: 1.25rem; box-shadow: 0 12px 0 rgba(92, 58, 44, 0.32); }
+    .choice-btn { transition: transform .18s ease, background-color .18s ease, border-color .18s ease; border: 3px solid rgba(255,255,255,0.18); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.12); }
     .choice-btn:hover { transform: translateY(-2px); }
     .choice-btn:focus-visible { outline: 3px solid #ef6b57; outline-offset: 3px; }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+    .avatar-option { background: rgba(255,255,255,0.10); border: 2px solid rgba(255,255,255,.12); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.08); }
+    .avatar-option.active { background: rgba(239, 107, 87, 0.18); border-color: rgba(239,107,87,.8); }
+    .avatar-box { background: linear-gradient(180deg, #f9d5ad, #f4c38a); border-color: rgba(111,64,47,.25); }
+    .scene-shell { background: linear-gradient(180deg, #f9efe4, #f1dbc1); }
+    .scene-text { max-width: 860px; margin: 0 auto; }
+    .pixel-title { text-shadow: 3px 3px 0 rgba(93, 55, 31, 0.2); }
+    #ending-screen { background: linear-gradient(180deg, #f9f1e8, #f2d7bf); color: var(--ink); }
+    #ending-screen > * { max-width: 52rem; margin-left: auto; margin-right: auto; }
+    .ticker-track { animation: ticker 28s linear infinite; width: max-content; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .fade-in { animation: fade .45s ease both; }
+    @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    body { background: #eadcc7; color: #29231f; }
+    .intro-surface { background: #e9654e; border: 4px solid #29231f !important; box-shadow: 9px 9px 0 #29231f !important; transform: rotate(-1deg); }
+    .intro-surface h1, .intro-surface p, .intro-surface span { text-shadow: 2px 2px 0 rgba(41,35,31,.2); }
+    .glass-panel { border: 4px solid #29231f; border-radius: 1rem; box-shadow: 7px 7px 0 #29231f; backdrop-filter: none; }
+    #intro-screen > .absolute { background: radial-gradient(circle at 20% 10%, #f6bd72 0 10%, transparent 10.5%), radial-gradient(circle at 80% 80%, #c5d9c1 0 12%, transparent 12.5%), #f4ead9 !important; }
+    #intro-screen::after, #story-screen::after { content: ''; position: fixed; inset: 0; pointer-events: none; opacity: .17; background-image: radial-gradient(#29231f 1px, transparent 1.5px); background-size: 9px 9px; mix-blend-mode: multiply; }
+    .avatar-option { background: #fff8e9; color: #29231f; border: 3px solid #29231f; box-shadow: 3px 3px 0 #29231f; }
+    .avatar-option.active { background: #f3c65f; border-color: #29231f; transform: translate(-1px, -1px); }
+    .avatar-box { background: #f6c985; border: 3px solid #29231f !important; }
+    #start-btn { border: 3px solid #29231f; box-shadow: 4px 4px 0 #29231f; border-radius: .65rem; }
+    #story-screen { background: #eadcc7; }
+    #story-screen > header { background: #29231f; border-bottom: 4px solid #e9654e; }
+    .scene-shell { background: #fff8e9; border: 5px solid #29231f; border-top: 0; box-shadow: inset 0 -10px 0 rgba(41,35,31,.06); }
+    .scene-shell > .w-full { padding: 1rem; background: #d7e2d6; border-bottom: 5px solid #29231f; }
+    .scene-shell > .w-full svg { border: 4px solid #29231f; box-shadow: 7px 7px 0 #29231f; filter: saturate(.9) contrast(1.05); }
+    .comic-caption { display: inline-block; padding: .35rem .7rem; background: #29231f; color: #fff8e9; font-family: Georgia, 'Noto Serif TC', serif; font-weight: 700; transform: rotate(-1deg); }
+    .speech-bubble { position: relative; display: block; max-width: 34rem; margin: .4rem 0 0 auto; padding: .8rem 1rem; background: #fff; color: #29231f; border: 4px solid #29231f; border-radius: 1.25rem; box-shadow: 4px 4px 0 #29231f; font-weight: 700; }
+    .speech-bubble::after { content: ''; position: absolute; right: 2rem; bottom: -16px; width: 22px; height: 22px; background: #fff; border-right: 4px solid #29231f; border-bottom: 4px solid #29231f; transform: skew(18deg) rotate(45deg); }
+    .dialogue-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1rem; }
+    .dialogue-strip .speech-bubble { margin: 0; max-width: none; }
+    .dialogue-strip .speech-bubble:nth-child(even) { background: #f6c85f; }
+    .dialogue-speaker { display: block; color: #e9654e; font-size: .68rem; letter-spacing: .12em; margin-bottom: .2rem; }
+    .soup-reveal { opacity: 0; transform: scale(.92); transition: opacity .35s ease, transform .35s ease; }
+    .soup-reveal.soup-visible { opacity: 1; transform: scale(1); }
+    .soup-reveal.soup-fade { opacity: 0; transform: scale(1.04); }
+    .soup-offer { transform-origin: center; animation: soupOffer 1.1s ease-in-out infinite alternate; }
+    @keyframes soupOffer { from { transform: translateX(0); } to { transform: translateX(14px); } }
+    .soup-stage { position: relative; overflow: hidden; }
+    .soup-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .75; z-index: 0; }
+    .grandma-sprite { position: absolute; left: 12%; bottom: 12%; width: 24%; max-width: 190px; height: auto; z-index: 2; filter: drop-shadow(4px 5px 0 rgba(41, 33, 31, .25)); }
+    .scene-rain line { animation: rainFall 1.2s linear infinite; }
+    .scene-rain line:nth-child(2n) { animation-delay: -.4s; }
+    .scene-rain line:nth-child(3n) { animation-delay: -.8s; }
+    .scene-lamp { transform-origin: center bottom; animation: lampGlow 2.8s ease-in-out infinite; }
+    .scene-bus-light { animation: busLight 2.2s ease-in-out infinite; }
+    .scene-hanger { transform-origin: top center; animation: hangerSwing 2.4s ease-in-out infinite alternate; }
+    .scene-window-flow { animation: windowFlow 7s linear infinite; }
+    .scene-screen { animation: screenPulse 2.6s ease-in-out infinite; }
+    .scene-photo { filter: saturate(.88) contrast(1.04) brightness(.92); }
+    @keyframes rainFall { from { transform: translateY(-26px); opacity: 0; } 25% { opacity: .8; } to { transform: translateY(32px); opacity: 0; } }
+    @keyframes lampGlow { 0%, 100% { opacity: .68; } 50% { opacity: 1; filter: drop-shadow(0 0 9px #f3d47b); } }
+    @keyframes busLight { 0%, 100% { opacity: .45; } 50% { opacity: .9; } }
+    @keyframes hangerSwing { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+    @keyframes windowFlow { from { transform: translateX(0); } to { transform: translateX(-80px); } }
+    @keyframes screenPulse { 0%, 100% { opacity: .65; } 50% { opacity: 1; } }
+    .avatar-module { image-rendering: auto; display: block; }
+    @media (max-width: 640px) { .dialogue-strip { grid-template-columns: 1fr; } }
+    #story-screen .game-panel { background: #29231f; border-color: #29231f; box-shadow: 7px 7px 0 #e9654e; }
+    .choice-btn { border: 3px solid #fff8e9; border-radius: .65rem; box-shadow: 4px 4px 0 #e9654e; }
+    .choice-btn:hover { background: #e9654e !important; transform: translate(-2px, -2px); }
+    #ending-screen { background: #fff8e9; background-image: radial-gradient(#d7c5ae 1px, transparent 1.5px); background-size: 10px 10px; }
+    #ending-screen .bg-mint\/50, #ending-screen .bg-\[\#ef6b57\]\/10 { border: 4px solid #29231f; box-shadow: 6px 6px 0 #29231f; }
+    @media (max-width: 640px) { .intro-surface { transform: none; } .scene-shell > .w-full { padding: .5rem; } .speech-bubble { margin-right: .5rem; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
   </style>
 </head>
-<body class="font-sans min-h-screen">
-  <header class="hidden">
-    <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
-      <a href="#game" class="font-bold tracking-tight text-sm sm:text-base">路上拾起一點點</a>
-      <div class="flex items-center gap-3 text-xs uppercase tracking-[.18em] text-stone-500">
-        <span id="progress-label">序章</span><span class="w-12 h-px bg-line"></span><span id="progress-count">00 / 03</span>
-      </div>
-    </div>
-  </header>
+<body class="min-h-screen">
+  <main id="game">
+    <section id="intro-screen" class="phone-stage relative overflow-hidden flex items-center justify-center p-4 sm:p-8">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,#7e9bb0_0%,#23384d_35%,#0f1720_100%)]"></div>
+      <div class="relative z-10 w-full max-w-6xl grid lg:grid-cols-[1.3fr_0.9fr] gap-6 items-center">
+        <div class="intro-surface rounded-3xl border border-white/10 p-5 sm:p-8 text-white shadow-soft">
+          <p class="text-[#f3d47b] font-bold text-[10px] tracking-[.2em]">A CHOICE GAME</p>
+          <h1 class="font-display text-3xl sm:text-5xl leading-[.98] mt-4 tracking-tight pixel-title">
+            今天的好意，<span class="text-[#f3d47b]">也可能很累。</span>
+          </h1>
+          <p class="mt-4 text-sm sm:text-base text-white/80 leading-7 max-w-lg">
+            你是那個想盡辦法幫助別人的人。可是在城市裡，對著走過來的每個難題，都可能不是答案，而是一個更深的負擔。
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3 text-xs text-white/75">
+            <span class="px-3 py-1.5 rounded-full border border-white/15 bg-white/5">漫畫角色</span>
+            <span class="px-3 py-1.5 rounded-full border border-white/15 bg-white/5">紙娃娃選擇</span>
+            <span class="px-3 py-1.5 rounded-full border border-white/15 bg-white/5">微型社會劇</span>
+          </div>
+        </div>
 
-  <main id="game" class="p-0">
-    <section id="intro-screen" class="phone-stage relative overflow-hidden flex items-end">
-      <div class="hero-placeholder image-fill responsive-background absolute inset-0" style="--desktop-image: url('images/1.jpg'); --mobile-image: url('images/1-1.jpg');" aria-label="主視覺圖片：城市通勤剪影"></div>
-      <div class="relative z-10 w-full p-2 sm:p-4 text-white fade-in">
-        <div class="glass-panel rounded-xl p-3 sm:p-4 max-w-md mx-auto">
-          <p class="text-butter font-bold text-[10px] tracking-[.18em] mb-2">A CHOICE GAME</p>
-          <h1 class="font-display text-2xl sm:text-3xl leading-[.98] tracking-tight">為什麼我想盡辦法幫助他人，<span class="text-butter">但結果不總是好的？</span></h1>
-          <button id="start-btn" class="w-full mt-3 bg-coral text-white px-4 py-2.5 rounded-lg text-xs font-bold hover:bg-butter hover:text-ink transition-colors">開始這一天 <span aria-hidden="true">→</span></button>
+        <div class="glass-panel game-panel rounded-3xl p-4 sm:p-5 text-white">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <p class="text-[10px] tracking-[.2em] text-[#f3d47b]">CREATE YOURSELF</p>
+              <h2 class="font-display text-2xl mt-1">紙娃娃</h2>
+            </div>
+            <div class="w-20 h-20 rounded-2xl avatar-box border border-white/10 overflow-hidden flex items-center justify-center">
+              <div id="avatar-preview"></div>
+            </div>
+          </div>
+
+          <div class="space-y-4 text-sm">
+            <div>
+              <label class="block text-[10px] tracking-[.18em] text-white/60 mb-2 uppercase">髮型</label>
+              <div id="hair-options" class="grid grid-cols-3 gap-2"></div>
+            </div>
+            <div>
+              <label class="block text-[10px] tracking-[.18em] text-white/60 mb-2 uppercase">膚色</label>
+              <div id="skin-options" class="grid grid-cols-5 gap-2"></div>
+            </div>
+            <div>
+              <label class="block text-[10px] tracking-[.18em] text-white/60 mb-2 uppercase">衣服</label>
+              <div id="outfit-options" class="grid grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <button id="start-btn" class="w-full mt-5 bg-[#ef6b57] hover:bg-[#f3d47b] hover:text-[#1e2829] text-white px-4 py-3 rounded-xl text-sm font-bold transition-colors">
+            開始這一天 →
+          </button>
         </div>
       </div>
     </section>
 
     <section id="story-screen" class="hidden w-full">
+      <header class="sticky top-0 z-20 flex items-center justify-between gap-4 px-4 py-3 bg-[#2f2424] text-white border-b-4 border-[#8d5a46]">
+        <span id="progress-label" class="text-[10px] tracking-[.18em] text-[#f3d47b] font-bold">EVENT 01</span>
+        <span id="progress-count" class="text-xs text-white/70">01 / 03</span>
+      </header>
       <div id="scene-container"></div>
     </section>
 
-    <section id="ending-screen" class="hidden min-h-screen w-full bg-paper text-ink px-5 py-10 sm:px-8 lg:py-14">
+    <section id="ending-screen" class="hidden min-h-screen w-full px-5 py-10 sm:px-8 lg:py-14">
       <div id="ending-content" class="fade-in"></div>
+
       <section class="mt-16 border-t border-line pt-10">
-        <div class="flex flex-wrap items-end justify-between gap-4 mb-6"><div><p class="text-coral text-xs font-bold tracking-[.18em]">STORIES ON THE WAY</p><h2 class="font-display text-4xl mt-2">有人也走過這裡</h2></div><span class="text-sm text-stone-500">社會群像 / 01—05</span></div>
-        <div class="overflow-hidden border-y border-mint py-4 bg-mint text-ink"><div class="ticker-track flex gap-10 text-sm"><span>撿起路上的垃圾，城市就亮了一點</span><span>護理師說：今天也有人需要被好好聽見</span><span>陪長輩走一小段路，時間就慢下來</span><span>教室裡的一句鼓勵，可能留很久</span><span>高中生把傘分給陌生人，自己淋了一點雨</span><span>撿起路上的垃圾，城市就亮了一點</span><span>護理師說：今天也有人需要被好好聽見</span></div></div>
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+          <div>
+            <p class="text-coral text-xs font-bold tracking-[.18em]">STORIES ON THE WAY</p>
+            <h2 class="font-display text-4xl mt-2">有人也走過這裡</h2>
+          </div>
+          <span class="text-sm text-stone-500">社會群像 / 01—05</span>
+        </div>
+
+        <div class="overflow-hidden border-y border-mint py-4 bg-mint text-ink">
+          <div class="ticker-track flex gap-10 text-sm">
+            <span>撿起路上的垃圾，城市就亮了一點</span>
+            <span>護理師說：今天也有人需要被好好聽見</span>
+            <span>陪長輩走一小段路，時間就慢下來</span>
+            <span>教室裡的一句鼓勵，可能留很久</span>
+            <span>高中生把傘分給陌生人，自己淋了一點雨</span>
+            <span>撿起路上的垃圾，城市就亮了一點</span>
+            <span>護理師說：今天也有人需要被好好聽見</span>
+          </div>
+        </div>
+
         <div class="grid sm:grid-cols-2 gap-4 mt-6">
-          <article class="bg-white/70 p-5 border border-line"><span class="text-2xl">✦</span><h3 class="font-bold mt-3">志工阿榮</h3><p class="text-sm text-stone-600 mt-2 leading-6">「有些事情沒有掌聲，但街道會記得。」</p></article>
-          <article class="bg-mint/40 p-5 border border-line"><span class="text-2xl">＋</span><h3 class="font-bold mt-3">社工小雯</h3><p class="text-sm text-stone-600 mt-2 leading-6">「先陪對方坐一下，答案有時才會出現。」</p></article>
+          <article class="bg-white/70 p-5 border border-line">
+            <span class="text-2xl">✦</span>
+            <h3 class="font-bold mt-3">志工阿榮</h3>
+            <p class="text-sm text-stone-600 mt-2 leading-6">「有些事情沒有掌聲，但街道會記得。」</p>
+            <a class="inline-block text-xs text-coral font-bold mt-4 border-b border-coral" href="https://e-info.org.tw/" target="_blank" rel="noreferrer">環境行動資料 ↗</a>
+          </article>
+          <article class="bg-mint/40 p-5 border border-line">
+            <span class="text-2xl">＋</span>
+            <h3 class="font-bold mt-3">社工小雯</h3>
+            <p class="text-sm text-stone-600 mt-2 leading-6">「先陪對方坐一下，答案有時才會出現。」</p>
+            <a class="inline-block text-xs text-coral font-bold mt-4 border-b border-coral" href="https://www.mohw.gov.tw/" target="_blank" rel="noreferrer">公共服務資料 ↗</a>
+          </article>
+          <article class="bg-[#dfeaf0] p-5 border border-line">
+            <span class="text-2xl">♥</span>
+            <h3 class="font-bold mt-3">急救的高中生</h3>
+            <p class="text-sm text-stone-600 mt-2 leading-6">有人倒下時，有人打電話、有人疏散、有人留下陪伴。</p>
+            <a class="inline-block text-xs text-coral font-bold mt-4 border-b border-coral" href="https://www.nfa.gov.tw/" target="_blank" rel="noreferrer">急救與防災資源 ↗</a>
+          </article>
+          <article class="bg-[#f6e2bd] p-5 border border-line">
+            <span class="text-2xl">✎</span>
+            <h3 class="font-bold mt-3">把一堂課留給孩子</h3>
+            <p class="text-sm text-stone-600 mt-2 leading-6">改變不一定立刻發生，但有人願意每天把希望教下去。</p>
+            <a class="inline-block text-xs text-coral font-bold mt-4 border-b border-coral" href="https://www.edu.tw/" target="_blank" rel="noreferrer">教育行動資料 ↗</a>
+          </article>
         </div>
       </section>
+
       <section class="mt-14 bg-butter/50 p-6 sm:p-8 border border-ink/10">
-        <p class="text-coral text-xs font-bold tracking-[.18em]">YOUR STORY WALL</p><h2 class="font-display text-3xl mt-2">換你留下今天的一點點</h2><p class="text-sm text-stone-600 mt-2">你幫助過誰，或誰曾經幫助你？</p>
-        <form id="story-form" class="mt-6"><label for="story-input" class="sr-only">分享你的故事</label><textarea id="story-input" required maxlength="180" rows="3" placeholder="寫下一段 180 字以內的故事……" class="w-full resize-none bg-paper border border-line p-4 outline-none focus:border-coral"></textarea><div class="flex justify-between items-center mt-3 gap-3"><span id="char-count" class="text-xs text-stone-500">0 / 180</span><button class="bg-ink text-white px-5 py-3 rounded-full text-sm font-bold hover:bg-coral transition-colors" type="submit">貼到故事牆 ＋</button></div></form>
+        <p class="text-coral text-xs font-bold tracking-[.18em]">YOUR STORY WALL</p>
+        <h2 class="font-display text-3xl mt-2">換你留下今天的一點點</h2>
+        <p class="text-sm text-stone-600 mt-2">你幫助過誰，或誰曾經幫助你？也可以加上 <strong>#Changemaker</strong>，讓這個故事繼續被看見。</p>
+        <form id="story-form" class="mt-6">
+          <label for="story-input" class="sr-only">分享你的故事</label>
+          <textarea id="story-input" required maxlength="180" rows="3" placeholder="寫下一段 180 字以內的故事……" class="w-full resize-none bg-paper border border-line p-4 outline-none focus:border-coral"></textarea>
+          <div class="flex justify-between items-center mt-3 gap-3">
+            <span id="char-count" class="text-xs text-stone-500">0 / 180</span>
+            <button class="bg-ink text-white px-5 py-3 rounded-full text-sm font-bold hover:bg-coral transition-colors" type="submit">貼到故事牆 ＋</button>
+          </div>
+        </form>
         <div id="wall" class="mt-6 space-y-3"></div>
       </section>
+
       <button id="restart-btn" class="block mx-auto mt-10 text-sm font-bold border-b border-ink pb-1 hover:text-coral hover:border-coral">再走一次這條路 ↗</button>
     </section>
   </main>
 
-  <footer class="max-w-6xl mx-auto px-5 pb-8 text-xs text-stone-500 flex justify-between gap-4"><span>《幫助別人太累了吧》</span><span>一個關於界線與溫柔的練習</span></footer>
-
   <script>
+    const avatarSettings = {
+      hair: {
+        short: { label: '短髮', color: '#2b1d1c' },
+        bob: { label: '波波頭', color: '#4b2e25' },
+        curls: { label: '捲髮', color: '#3b241c' },
+        bun: { label: '高馬尾', color: '#2d2427' }
+      },
+      face: {
+        round: { label: '圓形' },
+        oval: { label: '橢圓' },
+        square: { label: '方形' }
+      },
+      skin: {
+        pale: { label: '白皙', value: '#f2d2a6' },
+        warm: { label: '自然', value: '#d79a6d' },
+        tan: { label: '小麥', value: '#bf7250' },
+        deep: { label: '深色', value: '#7d4c38' },
+        brown: { label: '棕色', value: '#5a3429' }
+      },
+      outfit: {
+        office: { label: '辦公風', color: '#c5654b', accent: '#f5d88d', pattern: 'stripe' },
+        casual: { label: '休閒', color: '#7d8e63', accent: '#f0c27a', pattern: 'dot' },
+        coat: { label: '外套', color: '#8d5a46', accent: '#f3d0a6', pattern: 'plain' },
+        street: { label: '街頭', color: '#d4794d', accent: '#f4b784', pattern: 'block' }
+      },
+      pose: {
+        idle: { label: '站立' },
+        wave: { label: '揮手' },
+        ready: { label: '待命' },
+        listen: { label: '傾聽' },
+        point: { label: '指向' },
+        tired: { label: '疲憊' }
+      }
+    };
+
     const scenes = [
-      { title: '公車站的阿姨', image: 'images/2.jpg', mobileImage: 'images/2-1.jpg', tag: 'EVENT 01', place: '07:42 ・ 巷口公車站', visual: '站牌、晨霧與一隻伸出的手', text: '阿姨在站牌旁攔住你，說差一點錢搭車。她的語氣很急，手也一直往下一個路人伸。', choices: [{ label: '借她一點', detail: '也許只是今天過不去。', help: false, result: '阿姨接過錢，沒有說謝謝，轉身又去問下一個人。你站在原地，手還維持著剛剛伸出的樣子。' }, { label: '搖搖頭，說聲抱歉', detail: '我也有自己的今天。', help: false, result: '阿姨皺起眉頭，說你們年輕人就是沒有同理心。公車來了，你帶著一點刺耳的話上車。' }] },
-      { title: '公車上的母子', image: 'images/3.jpg', mobileImage: 'images/3-1.jpg', tag: 'EVENT 02', place: '08:03 ・ 302 號公車', visual: '搖晃車廂與一格被陽光照亮的座位', text: '車上有人大聲指責哭泣的孩子和不斷道歉的媽媽。每個人都看著窗外，假裝那不是自己的事。', choices: [{ label: '站出來緩頰', detail: '「大家都先小聲一點，好嗎？」', help: true, result: '爭吵反而更大聲。你說要報警，對方才在下一站下車。到了公司，你因為遲到被老闆罵了一頓。' }, { label: '把視線移到窗外', detail: '我今天真的沒有力氣了。', help: false, result: '媽媽抱著孩子，在下一站匆匆下車。車門關上前，你們短暫地對上了眼。' }] },
-      { title: '公司的同事', image: 'images/4.jpg', mobileImage: 'images/4-1.jpg', tag: 'EVENT 03', place: '09:16 ・ 5 樓辦公室', visual: '螢光燈、桌面與一個被留下的人', text: '上司正在眾人面前刁難同事。那份報告明明不是他一個人的錯，但他的聲音已經小到聽不見。', choices: [{ label: '幫他說一句話', detail: '「這件事不是他一個人的責任。」', help: true, result: '辦公室安靜了一秒，接著你和同事一起被老闆罵。午休時，他紅著眼睛對你說謝謝。' }, { label: '繼續盯著自己的螢幕', detail: '先保護好自己的位置。', help: false, result: '同事一邊擦眼淚一邊離開辦公室。游標在你的螢幕上閃著，像什麼都沒有發生。' }] }
+      {
+        id: 'aunt',
+        tag: 'EVENT 01',
+        title: '公車站的阿姨',
+        place: '07:42 ・ 巷口公車站',
+        text: '阿姨在站牌旁攔住你，說差一點錢搭車。她的語氣很急，手也一直往下一個路人伸。',
+        choices: [
+          { label: '借她一點', detail: '也許只是今天過不去。', help: false, result: '阿姨接過錢，沒有說謝謝，轉身又去問下一個人。你站在原地，手還維持著剛剛伸出的樣子。' },
+          { label: '搖搖頭，說聲抱歉', detail: '我也有自己的今天。', help: false, result: '阿姨皺起眉頭，說你們年輕人就是沒有同理心。公車來了，你帶著一點刺耳的話上車。' }
+        ]
+      },
+      {
+        id: 'bus',
+        tag: 'EVENT 02',
+        title: '公車上的母子與讓位爭吵',
+        place: '08:03 ・ 302 號公車',
+        text: '車上有人大聲指責哭泣的孩子和不斷道歉的媽媽，另一頭又有人罵年輕人不讓位。每個人都看著窗外，假裝那些聲音不是自己的事。',
+        choices: [
+          { label: '站出來緩頰', detail: '「大家先小聲一點，也讓需要座位的人坐下。」', help: true, result: '你先請大家把聲音放低，也提醒旁邊的人讓出座位。爭吵反而越來越激烈，直到你說要報警，罵人的乘客才在下一站下車。到了公司，你因為遲到被老闆罵了一頓。' },
+          { label: '裝作沒有看見', detail: '我今天真的沒有力氣處理所有人的事。', help: false, result: '媽媽急忙抱著孩子在下一站下車；另一邊的年輕人縮著肩膀，把座位讓給了別人。車門關上前，你只看見他們各自低著頭。' }
+        ]
+      },
+      {
+        id: 'office',
+        tag: 'EVENT 03',
+        title: '公司的同事',
+        place: '09:16 ・ 5 樓辦公室',
+        text: '上司正在眾人面前刁難同事。那份報告明明不是他一個人的錯，但他的聲音已經小到聽不見。你知道只要開口，今天可能就會更難過。',
+        choices: [
+          { label: '幫他說一句話', detail: '「這件事不是他一個人的責任。」', help: true, result: '辦公室安靜了一秒，接著你和同事一起被老闆罵。午休時，他紅著眼睛對你說謝謝，說至少今天有人讓他知道自己沒有被全世界丟下。' },
+          { label: '繼續盯著自己的螢幕', detail: '先保護好自己的位置。', help: false, result: '同事一邊哭一邊離開辦公室。游標在你的螢幕上閃著，像什麼都沒有發生，但你知道那個下午少了一個願意說話的人。' }
+        ]
+      }
     ];
-    const state = { index: 0, helped: false, history: [] };
+
+    const state = {
+      avatar: {
+        hair: 'short',
+        face: 'oval',
+        skin: 'warm',
+        outfit: 'office',
+        pose: 'idle'
+      },
+      mood: 'neutral',
+      index: 0,
+      helped: false,
+      history: [],
+      lastChoice: null
+    };
+
     const $ = (selector) => document.querySelector(selector);
-    const intro = $('#intro-screen'), story = $('#story-screen'), ending = $('#ending-screen');
+    const intro = $('#intro-screen');
+    const story = $('#story-screen');
+    const ending = $('#ending-screen');
+
+    function buildAvatarOptions() {
+      const renderGroup = (groupId, key, items) => {
+        const el = $(`#${groupId}`);
+        const values = Object.keys(items);
+        values.forEach((value) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `avatar-option rounded-xl px-2 py-2 text-[10px] ${state.avatar[key] === value ? 'active' : ''}`;
+          button.dataset.key = key;
+          button.dataset.value = value;
+          button.innerHTML = `<div class="mb-2 flex justify-center">${renderAvatarSvg({ ...state.avatar, [key]: value }, { size: 34, quiet: true })}</div><span>${items[value].label}</span>`;
+          button.addEventListener('click', () => {
+            state.avatar[key] = value;
+            buildAvatarOptions();
+            renderAvatarPreview();
+          });
+          el.appendChild(button);
+        });
+      };
+
+      $('#hair-options').innerHTML = '';
+      $('#skin-options').innerHTML = '';
+      $('#outfit-options').innerHTML = '';
+
+      renderGroup('hair-options', 'hair', avatarSettings.hair);
+      renderGroup('skin-options', 'skin', avatarSettings.skin);
+      renderGroup('outfit-options', 'outfit', avatarSettings.outfit);
+    }
+
+    function renderAvatarPreview() {
+      $('#avatar-preview').innerHTML = renderAvatarSvg(state.avatar, { size: 74, quiet: true });
+    }
+
+    function getDiceBearAvatarUrl(avatar, mood = 'neutral', facing = 'right') {
+      const hair = { short: 'shortFlat', bob: 'bob', curls: 'curly', bun: 'bun' }[avatar.hair] || 'shortFlat';
+      const hairColor = { short: '2c1b18', bob: '4a312c', curls: '724133', bun: '2c1b18' }[avatar.hair] || '4a312c';
+      const skinColor = { pale: 'edb98a', warm: 'd08b5b', tan: 'ae5d29', deep: '724133', brown: '614335' }[avatar.skin] || 'edb98a';
+      const clothing = { office: 'blazerAndShirt', casual: 'shirtCrewNeck', coat: 'collarAndSweater', street: 'hoodie' }[avatar.outfit] || 'shirtCrewNeck';
+      const radius = '18';
+      const expression = {
+        neutral: { eyes: 'default', eyebrows: 'default', mouth: 'serious' },
+        worried: { eyes: 'side', eyebrows: 'sadConcerned', mouth: 'concerned' },
+        crying: { eyes: 'cry', eyebrows: 'sadConcerned', mouth: 'sad' },
+        angry: { eyes: 'side', eyebrows: 'angry', mouth: 'serious' },
+        ask: { eyes: 'surprised', eyebrows: 'raisedExcited', mouth: 'screamOpen' },
+        tired: { eyes: 'closed', eyebrows: 'sadConcerned', mouth: 'sad' },
+        hopeful: { eyes: 'happy', eyebrows: 'raisedExcited', mouth: 'smile' }
+      }[mood] || { eyes: 'default', eyebrows: 'default', mouth: 'serious' };
+      const params = new URLSearchParams({
+        seed: `${avatar.gender || 'player'}-${avatar.hair}-${avatar.skin}-${avatar.outfit}`,
+        top: hair,
+        hairColor,
+        skinColor,
+        clothing,
+        eyes: expression.eyes,
+        eyebrows: expression.eyebrows,
+        mouth: expression.mouth,
+        backgroundColor: 'transparent',
+        radius
+      });
+      if (facing === 'left') params.set('flip', 'true');
+      return `https://api.dicebear.com/9.x/avataaars/svg?${params.toString()}`;
+    }
+
+    function renderHairBlocks(hairType, color) {
+      const patterns = {
+        short: [
+          [10, 10, 18, 4], [18, 8, 28, 4], [30, 8, 18, 4], [8, 14, 42, 4], [10, 18, 40, 4], [12, 22, 36, 4]
+        ],
+        bob: [
+          [8, 10, 48, 4], [10, 14, 44, 4], [12, 18, 40, 4], [16, 22, 28, 4], [14, 26, 32, 4]
+        ],
+        curls: [
+          [8, 12, 8, 6], [18, 8, 10, 8], [30, 8, 10, 8], [40, 12, 8, 6], [10, 18, 40, 4], [14, 22, 32, 4]
+        ],
+        bun: [
+          [18, 8, 10, 6], [30, 8, 10, 6], [12, 12, 40, 4], [10, 16, 44, 4], [16, 20, 30, 4], [18, 24, 26, 4]
+        ]
+      };
+
+      return patterns[hairType].map(([x, y, w, h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}" stroke="#2a1d1c" stroke-width="1.2" />`).join('');
+    }
+
+    function renderAvatarSvg(avatar, options = {}) {
+      const { size = 100, quiet = false } = options;
+      return `<img class="avatar-module" src="${getDiceBearAvatarUrl(avatar)}" width="${size}" height="${size}" alt="紙娃娃角色" loading="lazy" />`;
+      const skin = avatarSettings.skin[avatar.skin].value;
+      const outfit = avatarSettings.outfit[avatar.outfit];
+      const hair = avatarSettings.hair[avatar.hair];
+      const faceWidth = avatar.face === 'square' ? 24 : avatar.face === 'round' ? 22 : 20;
+      const bodyScale = quiet ? 1 : 1.12;
+      const outfitAccent = outfit.accent || '#f4c788';
+      const pattern = outfit.pattern || 'plain';
+      const pose = avatar.pose || 'idle';
+
+      let armLeft = `<rect x="14" y="38" width="6" height="18" fill="${outfit.color}" />`;
+      let armRight = `<rect x="44" y="38" width="6" height="18" fill="${outfit.color}" />`;
+      let extraArm = '';
+
+      if (pose === 'wave') {
+        armLeft = `<rect x="10" y="28" width="6" height="12" fill="${outfit.color}" />`;
+        armRight = `<rect x="48" y="38" width="6" height="16" fill="${outfit.color}" />`;
+        extraArm = `<rect x="8" y="30" width="6" height="8" fill="${outfit.color}" />`;
+      } else if (pose === 'ready') {
+        armLeft = `<rect x="12" y="36" width="6" height="20" fill="${outfit.color}" />`;
+        armRight = `<rect x="46" y="36" width="6" height="20" fill="${outfit.color}" />`;
+      } else if (pose === 'listen') {
+        armLeft = `<rect x="12" y="34" width="6" height="18" fill="${outfit.color}" />`;
+        armRight = `<rect x="42" y="32" width="6" height="16" fill="${outfit.color}" />`;
+      } else if (pose === 'point') {
+        armLeft = `<rect x="12" y="40" width="6" height="16" fill="${outfit.color}" />`;
+        armRight = `<rect x="44" y="28" width="14" height="6" fill="${outfit.color}" />`;
+      } else if (pose === 'tired') {
+        armLeft = `<rect x="10" y="42" width="6" height="14" fill="${outfit.color}" />`;
+        armRight = `<rect x="46" y="42" width="6" height="14" fill="${outfit.color}" />`;
+      }
+
+      let outfitPattern = '';
+      if (pattern === 'stripe') {
+        outfitPattern = `<rect x="24" y="40" width="16" height="3" fill="${outfitAccent}" /><rect x="24" y="44" width="16" height="2" fill="${outfitAccent}" opacity="0.8" />`;
+      } else if (pattern === 'dot') {
+        outfitPattern = `<rect x="22" y="40" width="4" height="4" fill="${outfitAccent}" /><rect x="32" y="40" width="4" height="4" fill="${outfitAccent}" /><rect x="28" y="46" width="4" height="4" fill="${outfitAccent}" />`;
+      } else if (pattern === 'block') {
+        outfitPattern = `<rect x="22" y="41" width="8" height="8" fill="${outfitAccent}" /><rect x="34" y="41" width="8" height="8" fill="${outfitAccent}" />`;
+      }
+
+      return `
+        <svg class="pixel-art" width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+          <g transform="translate(0 0) scale(${bodyScale})">
+            ${renderHairBlocks(avatar.hair, hair.color)}
+            <rect x="20" y="20" width="${faceWidth}" height="18" fill="${skin}" stroke="#2a1d1c" stroke-width="1.2" />
+            <rect x="18" y="22" width="5" height="5" fill="#2a1d1c" />
+            <rect x="37" y="22" width="5" height="5" fill="#2a1d1c" />
+            <rect x="24" y="31" width="16" height="3" fill="#dc9f7d" opacity="0.8" />
+            <rect x="24" y="34" width="16" height="3" fill="#d3886d" opacity="0.7" />
+            <rect x="22" y="38" width="20" height="12" fill="${outfit.color}" stroke="#2a1d1c" stroke-width="1.2" />
+            ${armLeft}
+            ${armRight}
+            ${extraArm}
+            <rect x="24" y="50" width="8" height="10" fill="#563d38" />
+            <rect x="32" y="50" width="8" height="10" fill="#563d38" />
+            ${outfitPattern}
+          </g>
+        </svg>
+      `;
+    }
+
+    function makeFaceDetails(mood = 'neutral') {
+      const look = {
+        neutral: '<rect x="20" y="25" width="4" height="3" fill="#1f2937"/><rect x="36" y="25" width="4" height="3" fill="#1f2937"/><path d="M23 35 Q30 39 37 35" stroke="#7c4d34" stroke-width="2" fill="none" stroke-linecap="round" />',
+        worried: '<path d="M18 24 L22 22 L22 25" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M42 24 L38 22 L38 25" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M22 35 Q30 31 38 35" stroke="#7c4d34" stroke-width="2" fill="none" stroke-linecap="round" />',
+        crying: '<path d="M18 23 L22 22 L22 25" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M42 23 L38 22 L38 25" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M23 34 Q30 41 37 34" stroke="#7c4d34" stroke-width="2" fill="none" stroke-linecap="round" /><rect x="18" y="32" width="3" height="6" fill="#8ad8ff" opacity="0.9"/><rect x="39" y="32" width="3" height="6" fill="#8ad8ff" opacity="0.9" />',
+        angry: '<path d="M18 22 L22 20 L22 24" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M42 22 L38 20 L38 24" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M22 35 L30 38 L38 35" stroke="#7c4d34" stroke-width="2" fill="none" stroke-linecap="round" />',
+        ask: '<path d="M18 24 L22 22 L24 24" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M42 24 L38 22 L36 24" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="30" cy="36" rx="4" ry="3" fill="#7c4d34" />',
+        tired: '<path d="M18 25 L23 22 L23 26" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M42 25 L37 22 L37 26" stroke="#1f2937" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M23 35 Q30 33 37 35" stroke="#7c4d34" stroke-width="2" fill="none" stroke-linecap="round" />',
+        hopeful: '<rect x="20" y="24" width="4" height="3" fill="#1f2937"/><rect x="36" y="24" width="4" height="3" fill="#1f2937"/><path d="M24 36 Q30 40 36 36" stroke="#7c4d34" stroke-width="2" fill="none" stroke-linecap="round" />'
+      };
+      return look[mood] || look.neutral;
+    }
+
+    function makeSceneCharacter({ x, y, scale = 1, skin, hair, outfit, mood = 'neutral', facing = 'right', face = 'oval', pose = 'idle' }) {
+      const avatar = { skin, hair, outfit, face, pose };
+      const poseTransform = pose === 'tired' ? 'rotate(3 32 64)' : pose === 'listen' ? 'rotate(-3 32 64)' : pose === 'ready' ? 'translate(0 2)' : '';
+      return `
+        <g transform="translate(${x} ${y}) scale(${scale}) ${poseTransform}">
+          <ellipse cx="32" cy="78" rx="22" ry="3" fill="#29211f" opacity="0.2"/>
+          <image class="avatar-module" x="0" y="0" width="64" height="78" href="${getDiceBearAvatarUrl(avatar, mood, facing)}" preserveAspectRatio="xMidYMid meet" />
+        </g>
+      `;
+      const hairColor = avatarSettings.hair[hair].color;
+      const skinColor = avatarSettings.skin[skin].value;
+      const outfitData = avatarSettings.outfit[outfit];
+      const outfitColor = outfitData.color;
+      const outfitAccent = outfitData.accent || '#f4c788';
+      const hairHighlight = `<rect x="18" y="7" width="10" height="3" fill="#ffffff" opacity="0.18"/><rect x="13" y="12" width="4" height="8" fill="#ffffff" opacity="0.1"/>`;
+      const blush = mood === 'hopeful' ? '<rect x="17" y="31" width="5" height="3" fill="#e98f7e" opacity="0.65"/><rect x="38" y="31" width="5" height="3" fill="#e98f7e" opacity="0.65"/>' : '';
+      const outfitPattern = outfitData.pattern === 'stripe'
+        ? `<rect x="22" y="47" width="16" height="3" fill="${outfitAccent}"/><rect x="22" y="53" width="16" height="3" fill="${outfitAccent}" opacity="0.7"/>`
+        : outfitData.pattern === 'dot'
+          ? `<rect x="23" y="48" width="4" height="4" fill="${outfitAccent}"/><rect x="33" y="48" width="4" height="4" fill="${outfitAccent}"/>`
+          : outfitData.pattern === 'block'
+            ? `<rect x="22" y="47" width="7" height="8" fill="${outfitAccent}"/><rect x="33" y="47" width="7" height="8" fill="${outfitAccent}"/>`
+            : `<rect x="28" y="47" width="4" height="10" fill="${outfitAccent}" opacity="0.55"/>`;
+      const flip = facing === 'left' ? 'translate(40 0) scale(-1 1)' : '';
+      const head = face === 'round' ? 'rx="7" ry="7"' : face === 'square' ? 'rx="2" ry="2"' : 'rx="5" ry="6"';
+      let armLeft = `<rect x="14" y="40" width="7" height="20" fill="${outfitColor}" />`;
+      let armRight = `<rect x="39" y="40" width="7" height="20" fill="${outfitColor}" />`;
+      if (pose === 'wave') {
+        armLeft = `<rect x="8" y="30" width="7" height="12" fill="${outfitColor}" />`;
+        armRight = `<rect x="45" y="40" width="7" height="18" fill="${outfitColor}" />`;
+      } else if (pose === 'ready') {
+        armLeft = `<rect x="12" y="36" width="7" height="24" fill="${outfitColor}" />`;
+        armRight = `<rect x="41" y="36" width="7" height="24" fill="${outfitColor}" />`;
+      } else if (pose === 'listen') {
+        armLeft = `<rect x="12" y="36" width="7" height="22" fill="${outfitColor}" />`;
+        armRight = `<rect x="39" y="32" width="14" height="7" fill="${outfitColor}" />`;
+      } else if (pose === 'point') {
+        armLeft = `<rect x="13" y="40" width="7" height="20" fill="${outfitColor}" />`;
+        armRight = `<rect x="40" y="29" width="25" height="7" fill="${outfitColor}" />`;
+      } else if (pose === 'tired') {
+        armLeft = `<rect x="10" y="44" width="7" height="16" fill="${outfitColor}" />`;
+        armRight = `<rect x="43" y="44" width="7" height="16" fill="${outfitColor}" />`;
+      }
+      return `
+        <g transform="translate(${x} ${y}) scale(${scale}) ${flip}">
+          <rect x="12" y="75" width="36" height="3" fill="#2f3035" opacity="0.22"/>
+          ${renderHairBlocks(hair, hairColor)}
+          ${hairHighlight}
+          <rect x="14" y="16" width="28" height="24" ${head} fill="${skinColor}" stroke="#29211f" stroke-width="1.4"/>
+          ${makeFaceDetails(mood)}
+          ${blush}
+          <rect x="27" y="35" width="6" height="2" fill="#c78068" opacity="0.7"/>
+          <rect x="25" y="39" width="10" height="3" fill="${skinColor}"/>
+          <rect x="21" y="39" width="18" height="26" fill="${outfitColor}" stroke="#29211f" stroke-width="1.4"/>
+          <rect x="25" y="39" width="10" height="4" fill="${outfitAccent}" opacity="0.7"/>
+          <rect x="25" y="40" width="10" height="3" fill="${skinColor}" opacity="0.8"/>
+          ${armLeft}
+          ${armRight}
+          <rect x="20" y="42" width="3" height="5" fill="${outfitAccent}"/>
+          <rect x="37" y="42" width="3" height="5" fill="${outfitAccent}"/>
+          <rect x="14" y="61" width="10" height="14" fill="#3b2f2a"/>
+          <rect x="36" y="61" width="10" height="14" fill="#3b2f2a"/>
+          <rect x="12" y="74" width="13" height="4" fill="#211d20"/>
+          <rect x="35" y="74" width="13" height="4" fill="#211d20"/>
+          ${outfitPattern}
+        </g>
+      `;
+    }
+
+    function getPlayerSceneState(sceneId) {
+      const mood = state.mood || 'neutral';
+      const profiles = {
+        aunt: { neutral: ['worried', 'wave'], hopeful: ['hopeful', 'wave'], tired: ['tired', 'ready'] },
+        bus: { neutral: ['worried', 'listen'], hopeful: ['hopeful', 'listen'], tired: ['tired', 'tired'] },
+        office: { neutral: ['worried', 'point'], hopeful: ['hopeful', 'point'], tired: ['tired', 'ready'] }
+      };
+      const [sceneMood, scenePose] = profiles[sceneId][mood] || profiles[sceneId].neutral;
+      return { mood: sceneMood, pose: scenePose };
+    }
+
+    const sceneCharacters = {
+      aunt: {
+        auntie: { skin: 'pale', hair: 'bob', outfit: 'coat', gender: 'woman' }
+      },
+      ending: {
+        grandma: { skin: 'pale', hair: 'bob', outfit: 'coat', gender: 'grandmother' }
+      },
+      bus: {
+        mother: { skin: 'warm', hair: 'curls', outfit: 'casual', gender: 'woman' },
+        child: { skin: 'pale', hair: 'short', outfit: 'street', gender: 'child' },
+        passenger: { skin: 'tan', hair: 'short', outfit: 'office', gender: 'man' }
+      },
+      office: {
+        colleague: { skin: 'warm', hair: 'short', outfit: 'office', gender: 'man' },
+        manager: { skin: 'tan', hair: 'bob', outfit: 'office', gender: 'woman' }
+      }
+    };
+
+    function getSceneCharacter(sceneId, characterId, mood = 'neutral', facing = 'right', pose = 'idle') {
+      return { ...sceneCharacters[sceneId][characterId], mood, facing, pose };
+    }
+
+    function makeSpeechBubble({ x, y, width = 190, speaker, text, fill = '#fff' }) {
+      const lines = Array.from(text).reduce((groups, character) => {
+        const current = groups[groups.length - 1] || '';
+        if (!groups.length || current.length >= 11) groups.push(character);
+        else groups[groups.length - 1] = current + character;
+        return groups;
+      }, []);
+      const height = 50 + (lines.length * 17);
+      const textLines = lines.map((line, index) => `<tspan x="${x + 14}" dy="${index === 0 ? 0 : 17}">${line}</tspan>`).join('');
+      return `
+        <g class="svg-speech-bubble">
+          <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="14" fill="${fill}" stroke="#29211f" stroke-width="4"/>
+          <path d="M${x + 24} ${y + height} l14 18 l10-19" fill="${fill}" stroke="#29211f" stroke-width="4"/>
+          <text x="${x + 14}" y="${y + 20}" fill="#e9654e" font-family="Arial, Noto Sans TC, sans-serif" font-size="11" font-weight="700">${speaker}</text>
+          <text x="${x + 14}" y="${y + 39}" fill="#29211f" font-family="Arial, Noto Sans TC, sans-serif" font-size="13" font-weight="700">${textLines}</text>
+        </g>
+      `;
+    }
+
+    function renderSceneBubbles(scene) {
+      const result = state.lastChoice;
+      if (scene.id === 'aunt') {
+        if (result) {
+          return `${makeSpeechBubble({ x: 80, y: 145, width: 205, speaker: '你', text: result.label === '借她一點' ? '我先幫你一點。' : '抱歉，我今天沒辦法。', fill: '#f6c85f' })}${makeSpeechBubble({ x: 585, y: 125, width: 245, speaker: '阿姨', text: result.label === '借她一點' ? '（接過錢，又去問下一個人。）' : '你們年輕人就是沒有同理心！'})}`;
+        }
+        return makeSpeechBubble({ x: 585, y: 125, width: 245, speaker: '阿姨', text: '差一點點錢啦，年輕人幫一下嘛！' });
+      }
+      if (scene.id === 'bus') {
+        if (result) {
+          return `${makeSpeechBubble({ x: 75, y: 145, width: 235, speaker: '你', text: result.help ? '大家先冷靜，好嗎？' : '我今天真的沒有力氣了。', fill: '#f6c85f' })}${makeSpeechBubble({ x: 650, y: 105, width: 235, speaker: result.help ? '乘客' : '媽媽', text: result.help ? '你報警啊！我現在就下車！' : '對不起，我們下一站下車……'})}`;
+        }
+        return makeSpeechBubble({ x: 650, y: 105, width: 235, speaker: '乘客', text: '小孩一直哭，年輕人也不讓位！' });
+      }
+      if (scene.id === 'office') {
+        if (result) {
+          return `${makeSpeechBubble({ x: 65, y: 135, width: 235, speaker: '你', text: result.help ? '這件事不是他一個人的責任。' : '（游標繼續閃著。）', fill: '#f6c85f' })}${makeSpeechBubble({ x: 655, y: 80, width: 230, speaker: result.help ? '上司' : '同事', text: result.help ? '你也要替他負責嗎？' : '（擦著眼淚離開。）'})}`;
+        }
+        return makeSpeechBubble({ x: 655, y: 80, width: 230, speaker: '上司', text: '這份報告出錯，就是他的問題！' });
+      }
+      return '';
+    }
+
+    function renderSceneSvg(scene) {
+      const avatar = state.avatar;
+      const playerState = getPlayerSceneState(scene.id);
+      if (scene.id === 'aunt') {
+        return `
+          <svg class="pixel-art" viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+            <rect width="960" height="560" fill="#A5C8D7"/>
+            <rect x="0" y="410" width="960" height="150" fill="#4C5C68"/>
+            <rect x="0" y="200" width="220" height="210" fill="#8E9CA7"/>
+            <rect x="110" y="40" width="700" height="300" fill="#3E5260" opacity="0.75"/>
+            <rect x="0" y="0" width="960" height="22" fill="#7E97AE" opacity="0.5"/>
+            <g class="scene-rain" opacity="0.8">
+              <line x1="70" y1="10" x2="50" y2="120" stroke="#dfeaf2" stroke-width="2"/>
+              <line x1="150" y1="20" x2="130" y2="150" stroke="#dfeaf2" stroke-width="2"/>
+              <line x1="260" y1="5" x2="230" y2="120" stroke="#dfeaf2" stroke-width="2"/>
+              <line x1="420" y1="10" x2="380" y2="170" stroke="#dfeaf2" stroke-width="2"/>
+              <line x1="760" y1="8" x2="720" y2="150" stroke="#dfeaf2" stroke-width="2"/>
+            </g>
+            <rect x="610" y="110" width="265" height="220" fill="#8F9AA7" />
+            <rect x="620" y="120" width="245" height="200" fill="#d7dfe1"/>
+            <rect x="715" y="60" width="165" height="210" fill="#c5d2d3"/>
+            <rect x="700" y="150" width="30" height="160" fill="#4B5968"/>
+            <rect x="760" y="120" width="14" height="170" fill="#4B5968"/>
+            <rect x="400" y="330" width="260" height="90" fill="#d8d9d7"/>
+            <rect x="20" y="350" width="120" height="40" fill="#df8a6b"/>
+            <rect x="20" y="390" width="150" height="20" fill="#d4c7ba"/>
+            <rect x="250" y="100" width="16" height="310" fill="#354653"/>
+            <rect x="238" y="92" width="42" height="16" fill="#354653"/>
+            <rect class="scene-lamp" x="246" y="78" width="26" height="16" fill="#f3d47b"/>
+            <rect x="820" y="260" width="18" height="150" fill="#4b5968"/>
+            <rect x="792" y="250" width="74" height="44" fill="#e7b66f"/>
+            <rect x="800" y="258" width="58" height="28" fill="#526c73"/>
+            <rect x="807" y="263" width="44" height="5" fill="#f3d47b"/>
+            <rect x="97" y="430" width="750" height="20" fill="#d9d2c8"/>
+            <image class="scene-photo" href="images/backgrounds/bus-stop-illustration.svg" x="0" y="0" width="960" height="560" preserveAspectRatio="xMidYMid slice" opacity=".96"/>
+            <rect x="0" y="0" width="960" height="560" fill="#243746" opacity=".08"/>
+            <g transform="translate(50 18)">
+              ${makeSceneCharacter({ x: 170, y: 210, scale: 2.2, skin: avatar.skin, hair: avatar.hair, outfit: avatar.outfit, mood: playerState.mood, facing: 'right', face: avatar.face, pose: playerState.pose })}
+              ${makeSceneCharacter({ x: 520, y: 200, scale: 2.4, ...getSceneCharacter('aunt', 'auntie', 'ask', 'left') })}
+            </g>
+            ${renderSceneBubbles(scene)}
+          </svg>
+        `;
+      }
+
+      if (scene.id === 'bus') {
+        return `
+          <svg class="pixel-art" viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+            <rect width="960" height="560" fill="#9cb6c5"/>
+            <rect class="scene-window-flow" x="0" y="0" width="960" height="80" fill="#d7edf7" opacity="0.5"/>
+            <rect x="0" y="120" width="960" height="40" fill="#678095"/>
+            <rect x="0" y="360" width="960" height="200" fill="#5d7184"/>
+            <rect x="0" y="0" width="60" height="560" fill="#9aaab7"/>
+            <rect x="900" y="0" width="60" height="560" fill="#9aaab7"/>
+            <rect x="120" y="140" width="720" height="220" fill="#7a95a3"/>
+            <rect x="130" y="150" width="700" height="200" fill="#b0c7d1" opacity="0.7"/>
+            <g class="scene-hanger" opacity="0.55">
+              <rect x="170" y="80" width="18" height="170" fill="#e2edf4"/>
+              <rect x="245" y="80" width="18" height="170" fill="#e2edf4"/>
+              <rect x="320" y="80" width="18" height="170" fill="#e2edf4"/>
+              <rect x="395" y="80" width="18" height="170" fill="#e2edf4"/>
+              <rect x="470" y="80" width="18" height="170" fill="#e2edf4"/>
+              <rect x="545" y="80" width="18" height="170" fill="#e2edf4"/>
+              <rect x="620" y="80" width="18" height="170" fill="#e2edf4"/>
+              <rect x="695" y="80" width="18" height="170" fill="#e2edf4"/>
+            </g>
+            <g opacity="0.8">
+              <rect x="205" y="170" width="12" height="190" fill="#d7a866"/>
+              <rect x="735" y="170" width="12" height="190" fill="#d7a866"/>
+              <rect x="180" y="165" width="62" height="12" fill="#d7a866"/>
+              <rect x="710" y="165" width="62" height="12" fill="#d7a866"/>
+              <rect class="scene-bus-light" x="190" y="177" width="42" height="42" fill="#f3d47b" opacity="0.65"/>
+              <rect class="scene-bus-light" x="720" y="177" width="42" height="42" fill="#f3d47b" opacity="0.65"/>
+            </g>
+            <g>
+              <rect x="70" y="210" width="140" height="100" fill="#d8d8d2" opacity="0.88"/>
+              <rect x="79" y="220" width="120" height="80" fill="#b4b7b7" opacity="0.65"/>
+            </g>
+            <image class="scene-photo" href="images/backgrounds/bus-interior-illustration.svg" x="0" y="0" width="960" height="560" preserveAspectRatio="xMidYMid slice" opacity=".96"/>
+            <rect x="0" y="0" width="960" height="560" fill="#243746" opacity=".08"/>
+            <g transform="translate(118 16)">
+              ${makeSceneCharacter({ x: 140, y: 250, scale: 2.4, skin: avatar.skin, hair: avatar.hair, outfit: avatar.outfit, mood: playerState.mood, facing: 'right', face: avatar.face, pose: playerState.pose })}
+              ${makeSceneCharacter({ x: 470, y: 220, scale: 2.5, ...getSceneCharacter('bus', 'mother', 'crying', 'left') })}
+              ${makeSceneCharacter({ x: 585, y: 285, scale: 1.7, ...getSceneCharacter('bus', 'child', 'crying', 'left') })}
+              ${makeSceneCharacter({ x: 700, y: 210, scale: 2.6, ...getSceneCharacter('bus', 'passenger', 'angry', 'left', 'ready') })}
+            </g>
+            <g>
+              <rect x="170" y="110" width="12" height="210" fill="#d3a862"/>
+              <rect x="640" y="110" width="12" height="210" fill="#d3a862"/>
+            </g>
+            ${renderSceneBubbles(scene)}
+          </svg>
+        `;
+      }
+
+      if (scene.id === 'office') {
+        return `
+          <svg class="pixel-art" viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+            <rect width="960" height="560" fill="#dfe6ea"/>
+            <rect x="0" y="0" width="960" height="20" fill="#ebf3f6"/>
+            <rect x="60" y="70" width="840" height="160" fill="#c8d4db"/>
+            <rect x="80" y="90" width="180" height="120" fill="#f5f5f5"/>
+            <rect x="300" y="90" width="180" height="120" fill="#f5f5f5"/>
+            <rect x="520" y="90" width="180" height="120" fill="#f5f5f5"/>
+            <rect x="740" y="90" width="120" height="120" fill="#f5f5f5"/>
+            <rect x="60" y="250" width="840" height="220" fill="#bccad4"/>
+            <rect x="100" y="286" width="170" height="150" fill="#f5f5f0"/>
+            <rect x="320" y="286" width="170" height="150" fill="#f5f5f0"/>
+            <rect x="540" y="286" width="170" height="150" fill="#f5f5f0"/>
+            <rect x="760" y="286" width="90" height="150" fill="#f5f5f0"/>
+            <rect x="110" y="300" width="150" height="8" fill="#8b9da8"/>
+            <rect x="330" y="300" width="150" height="8" fill="#8b9da8"/>
+            <rect x="550" y="300" width="150" height="8" fill="#8b9da8"/>
+            <rect class="scene-screen" x="145" y="325" width="70" height="44" fill="#576d7a"/>
+            <rect class="scene-screen" x="365" y="325" width="70" height="44" fill="#576d7a"/>
+            <rect class="scene-screen" x="585" y="325" width="70" height="44" fill="#576d7a"/>
+            <rect x="165" y="338" width="30" height="5" fill="#f3d47b"/>
+            <rect x="385" y="338" width="30" height="5" fill="#9ed4d2"/>
+            <rect x="605" y="338" width="30" height="5" fill="#ef6b57"/>
+            <rect x="470" y="38" width="20" height="42" fill="#71818b"/>
+            <rect x="448" y="28" width="64" height="12" fill="#71818b"/>
+            <rect x="456" y="40" width="48" height="22" fill="#f3d47b" opacity="0.7"/>
+            <image class="scene-photo" href="images/backgrounds/office-illustration.svg" x="0" y="0" width="960" height="560" preserveAspectRatio="xMidYMid slice" opacity=".96"/>
+            <rect x="0" y="0" width="960" height="560" fill="#f5f0e8" opacity=".06"/>
+            <g transform="translate(30 10)">
+              ${makeSceneCharacter({ x: 110, y: 250, scale: 2.2, skin: avatar.skin, hair: avatar.hair, outfit: avatar.outfit, mood: playerState.mood, facing: 'right', face: avatar.face, pose: playerState.pose })}
+              ${makeSceneCharacter({ x: 500, y: 220, scale: 2.3, ...getSceneCharacter('office', 'colleague', 'crying', 'left') })}
+              ${makeSceneCharacter({ x: 700, y: 175, scale: 2.8, ...getSceneCharacter('office', 'manager', 'angry', 'left', 'ready') })}
+            </g>
+            ${renderSceneBubbles(scene)}
+          </svg>
+        `;
+      }
+
+      return '';
+    }
 
     function renderScene() {
       const scene = scenes[state.index];
       $('#progress-label').textContent = scene.tag;
       $('#progress-count').textContent = `0${state.index + 1} / 03`;
-      $('#scene-container').innerHTML = `<article class="phone-stage relative overflow-hidden fade-in"><div class="visual-placeholder image-fill responsive-background absolute inset-0 flex items-center justify-center text-center p-6" style="--desktop-image: url('${scene.image}'); --mobile-image: url('${scene.mobileImage}');"><div class="relative z-10 text-white/80"><span class="text-xs tracking-[.2em]">${scene.tag}</span></div></div><div class="relative z-10 h-screen flex flex-col justify-end p-2 sm:p-4"><div class="glass-panel rounded-lg p-2.5 sm:p-3 max-w-sm mx-auto w-full text-white"><div class="flex justify-between items-start gap-3"><div><p class="text-butter text-[9px] font-bold tracking-[.15em]">${scene.place}</p><h2 class="font-display text-xl sm:text-2xl mt-1">${scene.title}</h2></div><span class="text-base text-white/70" aria-hidden="true">${state.index === 0 ? '◌' : state.index === 1 ? '◒' : '□'}</span></div><p class="text-[11px] sm:text-xs leading-5 mt-2 text-white/90">${scene.text}</p><div class="grid grid-cols-2 gap-1 mt-3">${scene.choices.map((choice, i) => `<button class="choice-btn glass-choice text-left border rounded-lg p-2 min-h-[44px] text-white" data-choice="${i}"><span class="text-butter text-[9px] font-bold">${i === 0 ? 'A' : 'B'}</span><strong class="block mt-0.5 text-xs">${choice.label}</strong><span class="text-[10px] text-white/65 block mt-0.5">${choice.detail}</span></button>`).join('')}</div></div></div></article>`;
-      document.querySelectorAll('[data-choice]').forEach(button => button.addEventListener('click', () => choose(Number(button.dataset.choice))));
+      $('#scene-container').innerHTML = `
+        <article class="scene-shell fade-in">
+          <div class="scene-text pt-3 pb-1">
+            <div class="flex items-center justify-between gap-4 px-4 py-3">
+              <div>
+                <p class="comic-caption text-[10px] tracking-[.18em]">${scene.tag}</p>
+                <h2 class="font-display text-3xl mt-1">${scene.title}</h2>
+              </div>
+              <div class="text-sm text-stone-500">${scene.place}</div>
+            </div>
+          </div>
+          <div class="w-full">${renderSceneSvg(scene)}</div>
+          <div class="scene-text px-3 pb-5 pt-2">
+            <div class="glass-panel game-panel rounded-2xl p-4 text-white">
+              <p class="text-sm leading-6 text-white/90">${scene.text}</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
+                ${scene.choices.map((choice, i) => `
+                  <button type="button" class="choice-btn glass-choice rounded-xl p-3 text-left text-white hover:bg-[#ef6b57]" data-choice="${i}">
+                    <span class="text-[#f3d47b] text-[9px] font-bold tracking-[.18em]">${i === 0 ? 'A' : 'B'}</span>
+                    <strong class="block mt-1 text-base">${choice.label}</strong>
+                    <span class="block mt-1 text-sm text-white/70">${choice.detail}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+
+      document.querySelectorAll('[data-choice]').forEach((button) => {
+        button.addEventListener('click', () => choose(Number(button.dataset.choice)));
+      });
     }
+
+    function renderChoiceResult(choice, nextIndex) {
+      const scene = scenes[state.index];
+      const isLast = nextIndex >= scenes.length;
+      $('#progress-label').textContent = 'RESULT';
+      $('#progress-count').textContent = `${String(state.index + 1).padStart(2, '0')} / 03`;
+      $('#scene-container').innerHTML = `
+        <article class="scene-shell fade-in">
+          <div class="w-full">${renderSceneSvg(scene)}</div>
+          <div class="scene-text px-3 py-5">
+            <div class="glass-panel game-panel rounded-2xl p-5 text-white">
+              <p class="comic-caption text-[10px] tracking-[.2em]">YOUR CHOICE</p>
+              <h2 class="font-display text-3xl mt-2">${choice.label}</h2>
+              <p class="mt-4 text-base leading-8 text-white/90">${choice.result}</p>
+              <button id="continue-btn" type="button" class="choice-btn mt-6 w-full rounded-xl p-3 text-left text-white hover:bg-[#ef6b57]">
+                <span class="text-[#f3d47b] text-[9px] font-bold tracking-[.18em]">NEXT</span>
+                <strong class="block mt-1">${isLast ? '看見這一天的結局 →' : `前往 ${scenes[nextIndex].title} →`}</strong>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+      $('#continue-btn').addEventListener('click', () => {
+        if (isLast) {
+          renderEnding();
+          return;
+        }
+        state.lastChoice = null;
+        state.index = nextIndex;
+        renderScene();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
     function choose(choiceIndex) {
       const choice = scenes[state.index].choices[choiceIndex];
       state.helped = state.helped || choice.help;
       state.history.push(choice.result);
+      state.mood = choice.help ? 'hopeful' : 'tired';
+      state.avatar.pose = choice.help ? 'wave' : 'ready';
+      state.lastChoice = choice;
       const next = state.index + 1;
-      if (next < scenes.length) { state.index = next; renderScene(); } else { renderEnding(); }
+      renderChoiceResult(choice, next);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
     function renderEnding() {
-      story.classList.add('hidden'); ending.classList.remove('hidden'); $('#progress-label').textContent = 'END'; $('#progress-count').textContent = 'DONE';
+      story.classList.add('hidden');
+      ending.classList.remove('hidden');
+      $('#progress-label').textContent = 'END';
+      $('#progress-count').textContent = 'DONE';
+
       const warm = state.helped;
-      $('#ending-content').innerHTML = `<p class="text-coral font-bold text-sm tracking-[.18em]">THE DAY ENDS HERE</p><h1 class="font-display text-5xl sm:text-7xl leading-[.95] mt-5">今天真的<br><span class="text-coral">好累。</span></h1><div class="visual-placeholder image-fill responsive-background aspect-[16/7] mt-8" style="--desktop-image: url('images/5.jpg'); --mobile-image: url('images/5-1.jpg');" aria-label="結局圖片：便當店裡的阿姨遞來一碗湯"></div><p class="text-lg leading-8 mt-8">你去便當店吃飯，看見愛心餐的人嫌份量太少。你累了一天，沒有說話，只是默默把飯吃完。</p><div class="mt-8 border-l-2 ${warm ? 'border-mint' : 'border-line'} pl-5"><p class="font-bold">你的選擇紀錄</p><div class="space-y-3 mt-4 text-sm text-stone-600">${state.history.map((item, i) => `<p><span class="text-coral font-bold">0${i + 1}</span> ${item}</p>`).join('')}</div></div>${warm ? `<div class="mt-10 bg-mint/50 p-6 sm:p-8 border border-ink/10 fade-in"><p class="text-xs font-bold tracking-[.18em]">A SMALL WARM BRANCH UNLOCKED</p><p class="font-display text-3xl mt-3">但這一天，還有一點點回音。</p><div class="space-y-4 mt-6 text-sm leading-7"><p>滑社群時，你看到那位媽媽發了一篇脆文，謝謝一個陌生人。</p><p>同事傳來訊息：「抱歉，讓你一起被罵。今天好像沒有那麼糟了。」</p><p>便當店阿姨突然在桌上放下一碗湯：「今天很累吼？來啦，這請你吃啦。」</p></div><button id="aunt-btn" class="mt-6 text-left font-bold border-b-2 border-ink pb-1 hover:text-coral hover:border-coral">問阿姨：為什麼還是願意幫助別人？ ↗</button><p id="aunt-reply" class="hidden mt-5 p-4 bg-paper/80 leading-7">「我們都有生活很難的時候啦，被世界拒絕的時候很寂寞吧？ㄚ但該說不行的時候還是要說不行啦哈哈～」</p></div>` : `<div class="mt-10 p-6 border border-line bg-white/50"><p class="font-bold">今天沒有成為誰的英雄，也沒有關係。</p><p class="text-sm leading-7 text-stone-600 mt-2">幫助別人很累，設下界線也一樣需要勇氣。明天再決定要把力氣放在哪裡。</p></div>`}`;
-      if (warm) $('#aunt-btn').addEventListener('click', () => { $('#aunt-reply').classList.remove('hidden'); $('#aunt-btn').textContent = '阿姨把湯往你這邊推了推。'; });
+      $('#ending-content').innerHTML = `
+        <p class="text-coral font-bold text-sm tracking-[.18em]">THE DAY ENDS HERE</p>
+        <h1 class="font-display text-5xl sm:text-7xl leading-[.95] mt-5">
+          今天真的<br><span class="text-coral">好累。</span>
+        </h1>
+        <div class="mt-8 overflow-hidden rounded-3xl border border-line bg-[#dfe3de]">
+          <svg class="pixel-art" viewBox="0 0 960 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+            <rect width="960" height="360" fill="#dfe3de"/>
+            <rect x="0" y="260" width="960" height="100" fill="#97a5a0"/>
+            <rect x="140" y="120" width="660" height="180" fill="#c1c9c5"/>
+            <rect x="190" y="150" width="560" height="120" fill="#f8f2eb"/>
+            <image class="scene-photo" href="images/backgrounds/restaurant-illustration.svg" x="0" y="0" width="960" height="360" preserveAspectRatio="xMidYMid slice" opacity=".96"/>
+            <rect x="0" y="0" width="960" height="360" fill="#4a3028" opacity=".08"/>
+            <g transform="translate(212 23)">
+              ${makeSceneCharacter({ x: 200, y: 150, scale: 2.6, skin: state.avatar.skin, hair: state.avatar.hair, outfit: state.avatar.outfit, mood: 'worried', facing: 'left', face: state.avatar.face })}
+              ${makeSceneCharacter({ x: 350, y: 150, scale: 2.6, skin: 'pale', hair: 'bob', outfit: 'coat', mood: 'ask', facing: 'left', face: 'oval' })}
+            </g>
+          </svg>
+        </div>
+        <p class="text-lg leading-8 mt-8">你去便當店吃飯，看見愛心餐的人嫌份量太少。你累了一天，沒有說話，只是默默把飯吃完。</p>
+        <div class="mt-8 border border-coral/30 bg-[#ef6b57]/10 p-5 sm:p-6">
+          <p class="text-xs font-bold tracking-[.18em] text-coral">WHY CHANGE STILL MATTERS</p>
+          <p class="font-display text-2xl mt-3">結果沒有立刻變好，不代表那個選擇沒有意義。</p>
+          <p class="text-sm leading-7 text-stone-600 mt-3">有人願意在混亂裡多做一點，讓被幫助的人知道自己不是一個人。這些不一定被看見的行動，正是 Changemaker 讓社會開始回應的地方。</p>
+        </div>
+        <div class="mt-8 border-l-2 ${warm ? 'border-mint' : 'border-line'} pl-5">
+          <p class="font-bold">你的選擇紀錄</p>
+          <div class="space-y-3 mt-4 text-sm text-stone-600">
+            ${state.history.map((item, i) => `<p><span class="text-coral font-bold">0${i + 1}</span> ${item}</p>`).join('')}
+          </div>
+        </div>
+        ${warm ? `
+          <div class="mt-10 bg-mint/50 p-6 sm:p-8 border border-ink/10 fade-in">
+            <p class="text-xs font-bold tracking-[.18em]">A SMALL WARM BRANCH UNLOCKED</p>
+            <p class="font-display text-3xl mt-3">但這一天，還有一點點回音。</p>
+            <div class="space-y-4 mt-6 text-sm leading-7">
+              <p>滑社群時，你看到那位媽媽發了一篇脆文，謝謝一個陌生人。</p>
+              <p>同事傳來訊息：「抱歉，讓你一起被罵。今天好像沒有那麼糟了。」</p>
+              <p>便當店阿姨突然在桌上放下一碗湯：「今天很累吼？來啦，這請你吃啦。」</p>
+            </div>
+            <div id="soup-reveal" class="soup-reveal hidden fixed inset-0 z-50 flex items-center justify-center bg-[#29211f]/80 p-5">
+              <div class="w-full max-w-2xl bg-[#fff8e9] border-4 border-[#29211f] p-4 sm:p-6 shadow-[8px_8px_0_#e9654e]">
+                <p class="comic-caption">A SMALL WARM RETURN</p>
+                <p class="font-display text-3xl mt-3">阿嬤把湯往你這邊遞過來。</p>
+                <div class="soup-stage mt-4 border-4 border-[#29211f] bg-[#f6c85f]">
+                  <img class="soup-background" src="images/backgrounds/restaurant-illustration.svg" alt="便當店插畫背景" />
+                  <svg class="w-full" viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" aria-label="阿嬤遞出一碗湯的漫畫插格">
+                    <rect width="640" height="360" fill="#f6c85f"/>
+                    <rect y="270" width="640" height="90" fill="#e9654e"/>
+                    <circle cx="510" cy="86" r="62" fill="#fff8e9" opacity=".65"/>
+                    <g class="soup-offer">
+                      <rect x="340" y="218" width="130" height="34" rx="12" fill="#fff8e9" stroke="#29211f" stroke-width="5"/>
+                      <path d="M360 218 Q405 280 450 218" fill="#c5654b" stroke="#29211f" stroke-width="5"/>
+                      <path d="M375 205 Q385 180 395 205 M405 205 Q415 174 425 205" stroke="#fff8e9" stroke-width="6" fill="none" stroke-linecap="round"/>
+                    </g>
+                    <text x="430" y="115" fill="#29211f" font-size="28" font-weight="700" font-family="Arial, Noto Sans TC, sans-serif">辛苦了。</text>
+                  </svg>
+                  <img class="grandma-sprite" src="images/backgrounds/grandma-illustration.svg" alt="阿嬤遞湯" />
+                </div>
+              </div>
+            </div>
+            <button id="aunt-btn" class="mt-6 text-left font-bold border-b-2 border-ink pb-1 hover:text-coral hover:border-coral">問阿嬤：為什麼還是願意幫助別人？ ↗</button>
+            <p id="aunt-reply" class="hidden mt-5 p-4 bg-paper/80 leading-7">阿嬤：「我們都有生活很難的時候啦，被世界拒絕的時候很寂寞吧？ㄚ但該說不行的時候還是要說不行啦哈哈～」</p>
+          </div>
+        ` : `
+          <div class="mt-10 p-6 border border-line bg-white/50">
+            <p class="font-bold">今天沒有成為誰的英雄，也沒有關係。</p>
+            <p class="text-sm leading-7 text-stone-600 mt-2">幫助別人很累，設下界線也一樣需要勇氣。明天再決定要把力氣放在哪裡。</p>
+          </div>
+        `}
+      `;
+
+      if (warm) {
+        $('#aunt-btn').addEventListener('click', () => {
+          const reveal = $('#soup-reveal');
+          reveal.classList.remove('hidden');
+          requestAnimationFrame(() => reveal.classList.add('soup-visible'));
+          $('#aunt-btn').textContent = '阿嬤把湯往你這邊推了推。';
+          setTimeout(() => {
+            reveal.classList.add('soup-fade');
+            $('#aunt-reply').classList.remove('hidden');
+            setTimeout(() => {
+              reveal.classList.add('hidden');
+              reveal.classList.remove('soup-visible', 'soup-fade');
+            }, 450);
+          }, 1800);
+        });
+      }
     }
-    $('#start-btn').addEventListener('click', () => { intro.classList.add('hidden'); story.classList.remove('hidden'); renderScene(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    $('#restart-btn').addEventListener('click', () => { state.index = 0; state.helped = false; state.history = []; ending.classList.add('hidden'); intro.classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    $('#story-input').addEventListener('input', (event) => { $('#char-count').textContent = `${event.target.value.length} / 180`; });
-    $('#story-form').addEventListener('submit', (event) => { event.preventDefault(); const input = $('#story-input'); const card = document.createElement('article'); card.className = 'bg-paper/80 border border-line p-4 fade-in'; card.innerHTML = `<p class="text-sm leading-6"></p><p class="text-xs text-stone-500 mt-3">剛剛 ・ 你的故事</p>`; card.querySelector('p').textContent = input.value; $('#wall').prepend(card); input.value = ''; $('#char-count').textContent = '0 / 180'; });
+
+    $('#start-btn').addEventListener('click', () => {
+      intro.classList.add('hidden');
+      story.classList.remove('hidden');
+      renderScene();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    $('#restart-btn').addEventListener('click', () => {
+      state.index = 0;
+      state.helped = false;
+      state.history = [];
+      state.mood = 'neutral';
+      state.avatar.pose = 'idle';
+      state.lastChoice = null;
+      ending.classList.add('hidden');
+      intro.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    $('#story-input').addEventListener('input', (event) => {
+      $('#char-count').textContent = `${event.target.value.length} / 180`;
+    });
+
+    $('#story-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const input = $('#story-input');
+      const card = document.createElement('article');
+      card.className = 'bg-paper/80 border border-line p-4 fade-in';
+      card.innerHTML = '<p class="text-sm leading-6"></p><p class="text-xs text-stone-500 mt-3">剛剛 ・ 你的故事</p>';
+      card.querySelector('p').textContent = input.value;
+      $('#wall').prepend(card);
+      input.value = '';
+      $('#char-count').textContent = '0 / 180';
+    });
+
+    buildAvatarOptions();
+    renderAvatarPreview();
+    window.addEventListener('DOMContentLoaded', () => {
+      buildAvatarOptions();
+      renderAvatarPreview();
+    });
   </script>
 </body>
 </html>

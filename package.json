@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build && rm -rf dist/images && cp -r images dist/images"
   },
   "devDependencies": {
     "vite": "latest"
