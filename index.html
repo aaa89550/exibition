@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f4efe7" />
+  <title>幫助別人太累了吧｜線性選擇題遊戲</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { paper: '#f4efe7', ink: '#222522', coral: '#ef6b57', mint: '#b7d9c8', butter: '#f3d47b', line: '#d8d1c6' },
+          fontFamily: { display: ['Georgia', 'Noto Serif TC', 'serif'], sans: ['Arial', 'Noto Sans TC', 'sans-serif'] },
+          boxShadow: { soft: '0 14px 40px rgba(44, 42, 37, 0.08)' }
+        }
+      }
+    };
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background: #000; color: #222522; }
+    .grain { background-image: radial-gradient(rgba(34,37,34,.08) .6px, transparent .6px); background-size: 8px 8px; }
+    .visual-placeholder { background: repeating-linear-gradient(135deg, rgba(34,37,34,.07) 0 2px, transparent 2px 10px), #e6e0d6; }
+    .hero-placeholder { background: repeating-linear-gradient(135deg, rgba(34,37,34,.12) 0 2px, transparent 2px 12px), #b9b0a3; }
+    .image-fill { background-position: center; background-size: cover; background-repeat: no-repeat; }
+    .phone-stage { min-height: 100vh; width: 100%; }
+    .phone-stage::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(20, 24, 22, .08) 0%, transparent 45%, rgba(20, 24, 22, .58) 100%); }
+    .glass-panel { background: rgba(20, 24, 22, .64); border: 1px solid rgba(255, 255, 255, .18); box-shadow: 0 14px 35px rgba(0, 0, 0, .16); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .glass-choice { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .25); }
+    .glass-choice:hover { background: rgba(239, 107, 87, .9); border-color: transparent; }
+    #ending-screen { background: #fbf7ef; color: #222522; }
+    #ending-screen > * { max-width: 48rem; margin-left: auto; margin-right: auto; }
+    .ticker-track { animation: ticker 28s linear infinite; width: max-content; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .fade-in { animation: fade .55s ease both; }
+    @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .choice-btn { transition: transform .2s ease, background-color .2s ease, border-color .2s ease; }
+    .choice-btn:hover { transform: translateY(-2px); }
+    .choice-btn:focus-visible { outline: 3px solid #ef6b57; outline-offset: 3px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body class="font-sans min-h-screen">
+  <header class="hidden">
+    <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+      <a href="#game" class="font-bold tracking-tight text-sm sm:text-base">路上拾起一點點</a>
+      <div class="flex items-center gap-3 text-xs uppercase tracking-[.18em] text-stone-500">
+        <span id="progress-label">序章</span><span class="w-12 h-px bg-line"></span><span id="progress-count">00 / 03</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="game" class="p-0">
+    <section id="intro-screen" class="phone-stage relative overflow-hidden flex items-end">
+      <div class="hero-placeholder image-fill absolute inset-0" style="background-image: url('images/1.jpg');" aria-label="主視覺圖片：城市通勤剪影"></div>
+      <div class="relative z-10 w-full p-2 sm:p-4 text-white fade-in">
+        <div class="glass-panel rounded-xl p-3 sm:p-4 max-w-md mx-auto">
+          <p class="text-butter font-bold text-[10px] tracking-[.18em] mb-2">A CHOICE GAME</p>
+          <h1 class="font-display text-2xl sm:text-3xl leading-[.98] tracking-tight">為什麼我想盡辦法幫助他人，<span class="text-butter">但結果不總是好的？</span></h1>
+          <button id="start-btn" class="w-full mt-3 bg-coral text-white px-4 py-2.5 rounded-lg text-xs font-bold hover:bg-butter hover:text-ink transition-colors">開始這一天 <span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="story-screen" class="hidden w-full">
+      <div id="scene-container"></div>
+    </section>
+
+    <section id="ending-screen" class="hidden min-h-screen w-full bg-paper text-ink px-5 py-10 sm:px-8 lg:py-14">
+      <div id="ending-content" class="fade-in"></div>
+      <section class="mt-16 border-t border-line pt-10">
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-6"><div><p class="text-coral text-xs font-bold tracking-[.18em]">STORIES ON THE WAY</p><h2 class="font-display text-4xl mt-2">有人也走過這裡</h2></div><span class="text-sm text-stone-500">社會群像 / 01—05</span></div>
+        <div class="overflow-hidden border-y border-mint py-4 bg-mint text-ink"><div class="ticker-track flex gap-10 text-sm"><span>撿起路上的垃圾，城市就亮了一點</span><span>護理師說：今天也有人需要被好好聽見</span><span>陪長輩走一小段路，時間就慢下來</span><span>教室裡的一句鼓勵，可能留很久</span><span>高中生把傘分給陌生人，自己淋了一點雨</span><span>撿起路上的垃圾，城市就亮了一點</span><span>護理師說：今天也有人需要被好好聽見</span></div></div>
+        <div class="grid sm:grid-cols-2 gap-4 mt-6">
+          <article class="bg-white/70 p-5 border border-line"><span class="text-2xl">✦</span><h3 class="font-bold mt-3">志工阿榮</h3><p class="text-sm text-stone-600 mt-2 leading-6">「有些事情沒有掌聲，但街道會記得。」</p></article>
+          <article class="bg-mint/40 p-5 border border-line"><span class="text-2xl">＋</span><h3 class="font-bold mt-3">社工小雯</h3><p class="text-sm text-stone-600 mt-2 leading-6">「先陪對方坐一下，答案有時才會出現。」</p></article>
+        </div>
+      </section>
+      <section class="mt-14 bg-butter/50 p-6 sm:p-8 border border-ink/10">
+        <p class="text-coral text-xs font-bold tracking-[.18em]">YOUR STORY WALL</p><h2 class="font-display text-3xl mt-2">換你留下今天的一點點</h2><p class="text-sm text-stone-600 mt-2">你幫助過誰，或誰曾經幫助你？</p>
+        <form id="story-form" class="mt-6"><label for="story-input" class="sr-only">分享你的故事</label><textarea id="story-input" required maxlength="180" rows="3" placeholder="寫下一段 180 字以內的故事……" class="w-full resize-none bg-paper border border-line p-4 outline-none focus:border-coral"></textarea><div class="flex justify-between items-center mt-3 gap-3"><span id="char-count" class="text-xs text-stone-500">0 / 180</span><button class="bg-ink text-white px-5 py-3 rounded-full text-sm font-bold hover:bg-coral transition-colors" type="submit">貼到故事牆 ＋</button></div></form>
+        <div id="wall" class="mt-6 space-y-3"></div>
+      </section>
+      <button id="restart-btn" class="block mx-auto mt-10 text-sm font-bold border-b border-ink pb-1 hover:text-coral hover:border-coral">再走一次這條路 ↗</button>
+    </section>
+  </main>
+
+  <footer class="max-w-6xl mx-auto px-5 pb-8 text-xs text-stone-500 flex justify-between gap-4"><span>《幫助別人太累了吧》</span><span>一個關於界線與溫柔的練習</span></footer>
+
+  <script>
+    const scenes = [
+      { title: '公車站的阿姨', image: 'images/2.jpg', tag: 'EVENT 01', place: '07:42 ・ 巷口公車站', visual: '站牌、晨霧與一隻伸出的手', text: '阿姨在站牌旁攔住你，說差一點錢搭車。她的語氣很急，手也一直往下一個路人伸。', choices: [{ label: '借她一點', detail: '也許只是今天過不去。', help: false, result: '阿姨接過錢，沒有說謝謝，轉身又去問下一個人。你站在原地，手還維持著剛剛伸出的樣子。' }, { label: '搖搖頭，說聲抱歉', detail: '我也有自己的今天。', help: false, result: '阿姨皺起眉頭，說你們年輕人就是沒有同理心。公車來了，你帶著一點刺耳的話上車。' }] },
+      { title: '公車上的母子', image: 'images/3.jpg', tag: 'EVENT 02', place: '08:03 ・ 302 號公車', visual: '搖晃車廂與一格被陽光照亮的座位', text: '車上有人大聲指責哭泣的孩子和不斷道歉的媽媽。每個人都看著窗外，假裝那不是自己的事。', choices: [{ label: '站出來緩頰', detail: '「大家都先小聲一點，好嗎？」', help: true, result: '爭吵反而更大聲。你說要報警，對方才在下一站下車。到了公司，你因為遲到被老闆罵了一頓。' }, { label: '把視線移到窗外', detail: '我今天真的沒有力氣了。', help: false, result: '媽媽抱著孩子，在下一站匆匆下車。車門關上前，你們短暫地對上了眼。' }] },
+      { title: '公司的同事', image: 'images/4.jpg', tag: 'EVENT 03', place: '09:16 ・ 5 樓辦公室', visual: '螢光燈、桌面與一個被留下的人', text: '上司正在眾人面前刁難同事。那份報告明明不是他一個人的錯，但他的聲音已經小到聽不見。', choices: [{ label: '幫他說一句話', detail: '「這件事不是他一個人的責任。」', help: true, result: '辦公室安靜了一秒，接著你和同事一起被老闆罵。午休時，他紅著眼睛對你說謝謝。' }, { label: '繼續盯著自己的螢幕', detail: '先保護好自己的位置。', help: false, result: '同事一邊擦眼淚一邊離開辦公室。游標在你的螢幕上閃著，像什麼都沒有發生。' }] }
+    ];
+    const state = { index: 0, helped: false, history: [] };
+    const $ = (selector) => document.querySelector(selector);
+    const intro = $('#intro-screen'), story = $('#story-screen'), ending = $('#ending-screen');
+
+    function renderScene() {
+      const scene = scenes[state.index];
+      $('#progress-label').textContent = scene.tag;
+      $('#progress-count').textContent = `0${state.index + 1} / 03`;
+      $('#scene-container').innerHTML = `<article class="phone-stage relative overflow-hidden fade-in"><div class="visual-placeholder image-fill absolute inset-0 flex items-center justify-center text-center p-6" style="background-image: url('${scene.image}');"><div class="relative z-10 text-white/80"><span class="text-xs tracking-[.2em]">${scene.tag}</span></div></div><div class="relative z-10 h-screen flex flex-col justify-end p-2 sm:p-4"><div class="glass-panel rounded-lg p-2.5 sm:p-3 max-w-sm mx-auto w-full text-white"><div class="flex justify-between items-start gap-3"><div><p class="text-butter text-[9px] font-bold tracking-[.15em]">${scene.place}</p><h2 class="font-display text-xl sm:text-2xl mt-1">${scene.title}</h2></div><span class="text-base text-white/70" aria-hidden="true">${state.index === 0 ? '◌' : state.index === 1 ? '◒' : '□'}</span></div><p class="text-[11px] sm:text-xs leading-5 mt-2 text-white/90">${scene.text}</p><div class="grid grid-cols-2 gap-1 mt-3">${scene.choices.map((choice, i) => `<button class="choice-btn glass-choice text-left border rounded-lg p-2 min-h-[44px] text-white" data-choice="${i}"><span class="text-butter text-[9px] font-bold">${i === 0 ? 'A' : 'B'}</span><strong class="block mt-0.5 text-xs">${choice.label}</strong><span class="text-[10px] text-white/65 block mt-0.5">${choice.detail}</span></button>`).join('')}</div></div></div></article>`;
+      document.querySelectorAll('[data-choice]').forEach(button => button.addEventListener('click', () => choose(Number(button.dataset.choice))));
+    }
+    function choose(choiceIndex) {
+      const choice = scenes[state.index].choices[choiceIndex];
+      state.helped = state.helped || choice.help;
+      state.history.push(choice.result);
+      const next = state.index + 1;
+      if (next < scenes.length) { state.index = next; renderScene(); } else { renderEnding(); }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function renderEnding() {
+      story.classList.add('hidden'); ending.classList.remove('hidden'); $('#progress-label').textContent = 'END'; $('#progress-count').textContent = 'DONE';
+      const warm = state.helped;
+      $('#ending-content').innerHTML = `<p class="text-coral font-bold text-sm tracking-[.18em]">THE DAY ENDS HERE</p><h1 class="font-display text-5xl sm:text-7xl leading-[.95] mt-5">今天真的<br><span class="text-coral">好累。</span></h1><div class="visual-placeholder image-fill aspect-[16/7] mt-8" style="background-image: url('images/5.jpg');" aria-label="結局圖片：便當店裡的阿姨遞來一碗湯"></div><p class="text-lg leading-8 mt-8">你去便當店吃飯，看見愛心餐的人嫌份量太少。你累了一天，沒有說話，只是默默把飯吃完。</p><div class="mt-8 border-l-2 ${warm ? 'border-mint' : 'border-line'} pl-5"><p class="font-bold">你的選擇紀錄</p><div class="space-y-3 mt-4 text-sm text-stone-600">${state.history.map((item, i) => `<p><span class="text-coral font-bold">0${i + 1}</span> ${item}</p>`).join('')}</div></div>${warm ? `<div class="mt-10 bg-mint/50 p-6 sm:p-8 border border-ink/10 fade-in"><p class="text-xs font-bold tracking-[.18em]">A SMALL WARM BRANCH UNLOCKED</p><p class="font-display text-3xl mt-3">但這一天，還有一點點回音。</p><div class="space-y-4 mt-6 text-sm leading-7"><p>滑社群時，你看到那位媽媽發了一篇脆文，謝謝一個陌生人。</p><p>同事傳來訊息：「抱歉，讓你一起被罵。今天好像沒有那麼糟了。」</p><p>便當店阿姨突然在桌上放下一碗湯：「今天很累吼？來啦，這請你吃啦。」</p></div><button id="aunt-btn" class="mt-6 text-left font-bold border-b-2 border-ink pb-1 hover:text-coral hover:border-coral">問阿姨：為什麼還是願意幫助別人？ ↗</button><p id="aunt-reply" class="hidden mt-5 p-4 bg-paper/80 leading-7">「我們都有生活很難的時候啦，被世界拒絕的時候很寂寞吧？ㄚ但該說不行的時候還是要說不行啦哈哈～」</p></div>` : `<div class="mt-10 p-6 border border-line bg-white/50"><p class="font-bold">今天沒有成為誰的英雄，也沒有關係。</p><p class="text-sm leading-7 text-stone-600 mt-2">幫助別人很累，設下界線也一樣需要勇氣。明天再決定要把力氣放在哪裡。</p></div>`}`;
+      if (warm) $('#aunt-btn').addEventListener('click', () => { $('#aunt-reply').classList.remove('hidden'); $('#aunt-btn').textContent = '阿姨把湯往你這邊推了推。'; });
+    }
+    $('#start-btn').addEventListener('click', () => { intro.classList.add('hidden'); story.classList.remove('hidden'); renderScene(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    $('#restart-btn').addEventListener('click', () => { state.index = 0; state.helped = false; state.history = []; ending.classList.add('hidden'); intro.classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    $('#story-input').addEventListener('input', (event) => { $('#char-count').textContent = `${event.target.value.length} / 180`; });
+    $('#story-form').addEventListener('submit', (event) => { event.preventDefault(); const input = $('#story-input'); const card = document.createElement('article'); card.className = 'bg-paper/80 border border-line p-4 fade-in'; card.innerHTML = `<p class="text-sm leading-6"></p><p class="text-xs text-stone-500 mt-3">剛剛 ・ 你的故事</p>`; card.querySelector('p').textContent = input.value; $('#wall').prepend(card); input.value = ''; $('#char-count').textContent = '0 / 180'; });
+  </script>
+</body>
+</html>
